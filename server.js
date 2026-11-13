@@ -31,7 +31,7 @@ const SHIPPING_OPTIONS = [
   {
     shipping_rate_data: {
       type: 'fixed_amount',
-      fixed_amount: { amount: 395, currency: CURRENCY, display: 'subtle' },
+      fixed_amount: { amount: 395, currency: CURRENCY },
       display_name: 'Envío España (3–5 días laborables)',
       delivery_estimate: { minimum: { unit: 'business_day', value: 3 }, maximum: { unit: 'business_day', value: 5 } }
     }
@@ -39,7 +39,7 @@ const SHIPPING_OPTIONS = [
   {
     shipping_rate_data: {
       type: 'fixed_amount',
-      fixed_amount: { amount: 695, currency: CURRENCY, display: 'subtle' },
+      fixed_amount: { amount: 695, currency: CURRENCY },
       display_name: 'Envío Europa (5–8 días laborables)',
       delivery_estimate: { minimum: { unit: 'business_day', value: 5 }, maximum: { unit: 'business_day', value: 8 } }
     }
@@ -47,7 +47,7 @@ const SHIPPING_OPTIONS = [
   {
     shipping_rate_data: {
       type: 'fixed_amount',
-      fixed_amount: { amount: 1295, currency: CURRENCY, display: 'subtle' },
+      fixed_amount: { amount: 1295, currency: CURRENCY },
       display_name: 'Envío Internacional (8–15 días laborables)',
       delivery_estimate: { minimum: { unit: 'business_day', value: 8 }, maximum: { unit: 'business_day', value: 15 } }
     }
