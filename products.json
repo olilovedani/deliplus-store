@@ -1,0 +1,86 @@
+{
+  "currency": "GBP",
+  "markup": 2.5,
+  "products": [
+    {
+      "id": 1,
+      "name": "Deliplus Waterproof Eye Liner 01 Black",
+      "category": "eyes",
+      "basePrice": 2.2,
+      "image": "https://prod-mercadona.imgix.net/images/f44a4fa64c09ba45ca4fc10d8c55c606.jpg?fit=crop&h=300&w=300",
+      "retailPrice": 5.5,
+      "currency": "GBP",
+      "stripeUnitAmountCents": 550
+    },
+    {
+      "id": 2,
+      "name": "Deliplus Waterproof Eye Liner 06 Brown",
+      "category": "eyes",
+      "basePrice": 2.2,
+      "image": "https://prod-mercadona.imgix.net/images/f7103591e662577de248cebd8439f07c.jpg?fit=crop&h=300&w=300",
+      "retailPrice": 5.5,
+      "currency": "GBP",
+      "stripeUnitAmountCents": 550
+    },
+    {
+      "id": 3,
+      "name": "Deliplus Hyaluronic Acid & Ceramides Facial Serum - Hydrate",
+      "category": "face",
+      "basePrice": 6.0,
+      "image": "https://prod-mercadona.imgix.net/images/417a335e2cf9e49c883ec654f7eedb29.jpg?fit=crop&h=300&w=300",
+      "retailPrice": 15.0,
+      "currency": "GBP",
+      "stripeUnitAmountCents": 1500
+    },
+    {
+      "id": 4,
+      "name": "Deliplus Hyaluronic Acid & Aloe Vera Face Cream - Hydrate",
+      "category": "face",
+      "basePrice": 5.0,
+      "image": "https://prod-mercadona.imgix.net/images/f742763721e41b1e409c3cde1fb13d8e.jpg?fit=crop&h=300&w=300",
+      "retailPrice": 12.5,
+      "currency": "GBP",
+      "stripeUnitAmountCents": 1250
+    },
+    {
+      "id": 5,
+      "name": "Deliplus Aloe Vera Body Oil",
+      "category": "body",
+      "basePrice": 3.5,
+      "image": "https://prod-mercadona.imgix.net/images/76a23c276b7c9273382d278ac4fab212.jpg?fit=crop&h=300&w=300",
+      "retailPrice": 8.75,
+      "currency": "GBP",
+      "stripeUnitAmountCents": 875
+    },
+    {
+      "id": 6,
+      "name": "Deliplus Aloe Vera Body Lotion - Hydrate",
+      "category": "body",
+      "basePrice": 2.8,
+      "image": "https://prod-mercadona.imgix.net/images/075dfce6c0be2f32dd315789a65a7ce3.jpg?fit=crop&h=300&w=300",
+      "retailPrice": 7.0,
+      "currency": "GBP",
+      "stripeUnitAmountCents": 700
+    },
+    {
+      "id": 7,
+      "name": "Deliplus Protection & Shine Shampoo",
+      "category": "hair",
+      "basePrice": 2.1,
+      "image": "https://prod-mercadona.imgix.net/images/a49366621a784d2cf90babefbfd51827.jpeg?fit=crop&h=300&w=300",
+      "retailPrice": 5.25,
+      "currency": "GBP",
+      "stripeUnitAmountCents": 525
+    },
+    {
+      "id": 8,
+      "name": "Deliplus Repair & Nutrition Hair Mask",
+      "category": "hair",
+      "basePrice": 3.0,
+      "image": "https://prod-mercadona.imgix.net/images/a633371d3a0e4a33ecba0219f8674845.jpg?fit=crop&h=300&w=300",
+      "retailPrice": 7.5,
+      "currency": "GBP",
+      "stripeUnitAmountCents": 750
+    }
+  ]
+}

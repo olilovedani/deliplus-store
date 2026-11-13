@@ -1,9 +1,10 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en-GB">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>¡Gracias por tu compra! | Deliplus Store</title>
+    <title>Thank you for your order! | Deliplus UK</title>
+    <meta name="robots" content="noindex, follow">
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-50 text-gray-800 font-sans flex items-center justify-center min-h-screen">
@@ -13,15 +14,15 @@
                 <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
             </svg>
         </div>
-        <h1 class="text-2xl font-black text-emerald-700 mb-2">¡Pago realizado con éxito!</h1>
-        <p class="text-sm text-gray-600 mb-6">Gracias por tu compra. Hemos recibido tu pedido y te enviaremos la confirmación por email. Prepararemos tu pedido con <strong>envío mundial</strong> lo antes posible. 🌍</p>
+        <h1 class="text-2xl font-black text-emerald-700 mb-2">Payment successful!</h1>
+        <p class="text-sm text-gray-600 mb-6">Thank you for your order. We've received your payment and will send your confirmation by email. Your order will be prepared and shipped with <strong>worldwide delivery</strong> as soon as possible. 🌍</p>
         <p id="session-id" class="text-[11px] text-gray-400 mb-6 break-all"></p>
-        <a href="/" class="inline-block bg-emerald-700 hover:bg-emerald-800 text-white font-bold py-3 px-8 rounded-xl transition shadow-md">Volver a la tienda</a>
+        <a href="/" class="inline-block bg-emerald-700 hover:bg-emerald-800 text-white font-bold py-3 px-8 rounded-xl transition shadow-md">Back to the store</a>
     </div>
     <script>
         const params = new URLSearchParams(window.location.search);
         const sid = params.get('session_id');
-        if (sid) document.getElementById('session-id').innerText = 'Referencia de pedido: ' + sid;
+        if (sid) document.getElementById('session-id').innerText = 'Order reference: ' + sid;
     </script>
 </body>
 </html>

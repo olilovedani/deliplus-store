@@ -1,10 +1,29 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en-GB">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Deliplus Store | Envío Mundial</title>
-    <meta name="description" content="Tienda oficial Deliplus con envío mundial. Maquillaje, cuidado facial, corporal y capilar.">
+    <title>Deliplus UK | Authentic Spanish Cosmetics &amp; Skincare — Worldwide Delivery</title>
+    <meta name="description" content="Shop authentic Deliplus cosmetics from Mercadona in the UK. Spanish skincare, eye liners, facial serums, body care and haircare with fast UK delivery and worldwide shipping.">
+    <meta name="keywords" content="Deliplus UK, Mercadona cosmetics UK, Spanish skincare UK, Deliplus UK delivery, Spanish beauty products, Deliplus serum, Deliplus eye liner">
+    <link rel="canonical" href="https://deliplus.uk/">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Deliplus UK">
+    <meta property="og:title" content="Deliplus UK | Authentic Spanish Cosmetics &amp; Skincare">
+    <meta property="og:description" content="Authentic Deliplus cosmetics from Mercadona — Spanish skincare, makeup, body and hair care delivered across the UK and worldwide.">
+    <meta property="og:url" content="https://deliplus.uk/">
+    <meta property="og:locale" content="en_GB">
+    <meta property="og:image" content="https://deliplus.uk/og-image.png">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Deliplus UK | Authentic Spanish Cosmetics">
+    <meta name="twitter:description" content="Shop authentic Mercadona Deliplus skincare and beauty in the UK. Fast UK delivery, worldwide shipping.">
+    <meta name="twitter:image" content="https://deliplus.uk/og-image.png">
+
+    <meta name="robots" content="index, follow">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>.no-scrollbar::-webkit-scrollbar{display:none}.no-scrollbar{-ms-overflow-style:none;scrollbar-width:none}</style>
 </head>
@@ -12,7 +31,7 @@
 
     <!-- Announcement banner -->
     <div class="bg-emerald-700 text-white text-center py-2.5 text-xs sm:text-sm font-medium tracking-wide shadow-inner">
-        🌿 ¡Envío mundial disponible! · Colección Oficial Deliplus
+        🌿 Worldwide shipping available! · Official Deliplus Collection
     </div>
 
     <!-- Header -->
@@ -20,14 +39,14 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex justify-between items-center">
             <div class="flex items-center space-x-2.5">
                 <span class="text-2xl sm:text-3xl font-black tracking-tight text-emerald-700">Deliplus</span>
-                <span class="text-[10px] bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-0.5 rounded-full font-bold uppercase tracking-wider">Global</span>
+                <span class="text-[10px] bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-0.5 rounded-full font-bold uppercase tracking-wider">UK</span>
             </div>
 
             <button onclick="toggleCart()" class="relative bg-emerald-700 hover:bg-emerald-800 text-white px-4 sm:px-5 py-2.5 rounded-xl font-medium transition shadow-sm hover:shadow flex items-center space-x-2.5">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
                 </svg>
-                <span class="text-sm font-semibold">Carrito</span>
+                <span class="text-sm font-semibold">Basket</span>
                 <span id="cart-count" class="bg-white text-emerald-700 text-xs font-black px-2 py-0.5 rounded-full">0</span>
             </button>
         </div>
@@ -41,60 +60,60 @@
     <!-- Product grid -->
     <main class="max-w-7xl mx-auto px-4 sm:px-6 py-8">
         <div id="product-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6"></div>
-        <div id="loading" class="text-center text-gray-400 text-sm py-16">Cargando catálogo…</div>
+        <div id="loading" class="text-center text-gray-400 text-sm py-16">Loading catalogue…</div>
     </main>
 
     <footer class="bg-emerald-800 text-emerald-50 text-center text-xs py-6 mt-12">
-        © Deliplus Store · Tenerife 🇪🇸 → el mundo 🌍 · Pagos seguros con Stripe
+        © Deliplus UK · Authentic Spanish cosmetics, shipped worldwide 🌍 · Secure payments by Stripe
     </footer>
 
-    <!-- Slide-over cart -->
+    <!-- Slide-over basket -->
     <div id="cart-modal" class="fixed inset-0 bg-black/50 z-50 hidden flex justify-end">
         <div class="bg-white w-full max-w-md h-full flex flex-col shadow-2xl">
             <div class="p-4 sm:p-5 border-b flex justify-between items-center bg-emerald-700 text-white">
-                <h2 class="text-lg font-bold">🛒 Su Carrito</h2>
+                <h2 class="text-lg font-bold">🛒 Your Basket</h2>
                 <button onclick="toggleCart()" class="text-white/80 hover:text-white text-2xl font-bold px-2">&times;</button>
             </div>
 
             <div id="cart-items" class="flex-1 overflow-y-auto p-4 sm:p-5 space-y-3.5 divide-y divide-gray-100"></div>
 
             <div class="p-4 sm:p-5 border-t bg-gray-50 space-y-3">
-                <h3 class="text-xs font-bold text-gray-700 uppercase tracking-wider">Datos de Envío Global</h3>
+                <h3 class="text-xs font-bold text-gray-700 uppercase tracking-wider">Global Delivery Details</h3>
 
                 <div class="grid grid-cols-2 gap-2">
                     <div>
-                        <label class="block text-[11px] font-semibold text-gray-600 mb-1">Nombre *</label>
-                        <input type="text" id="checkout-name" placeholder="Tu nombre" class="w-full text-xs border border-gray-200 rounded-lg p-2.5 bg-white focus:ring-2 focus:ring-emerald-500 outline-none">
+                        <label class="block text-[11px] font-semibold text-gray-600 mb-1">First name *</label>
+                        <input type="text" id="checkout-name" placeholder="Your first name" class="w-full text-xs border border-gray-200 rounded-lg p-2.5 bg-white focus:ring-2 focus:ring-emerald-500 outline-none">
                     </div>
                     <div>
-                        <label class="block text-[11px] font-semibold text-gray-600 mb-1">Apellido *</label>
-                        <input type="text" id="checkout-surname" placeholder="Tu apellido" class="w-full text-xs border border-gray-200 rounded-lg p-2.5 bg-white focus:ring-2 focus:ring-emerald-500 outline-none">
+                        <label class="block text-[11px] font-semibold text-gray-600 mb-1">Surname *</label>
+                        <input type="text" id="checkout-surname" placeholder="Your surname" class="w-full text-xs border border-gray-200 rounded-lg p-2.5 bg-white focus:ring-2 focus:ring-emerald-500 outline-none">
                     </div>
                 </div>
 
                 <div class="grid grid-cols-2 gap-2">
                     <div>
                         <label class="block text-[11px] font-semibold text-gray-600 mb-1">Email *</label>
-                        <input type="email" id="checkout-email" placeholder="correo@example.com" class="w-full text-xs border border-gray-200 rounded-lg p-2.5 bg-white focus:ring-2 focus:ring-emerald-500 outline-none">
+                        <input type="email" id="checkout-email" placeholder="you@example.com" class="w-full text-xs border border-gray-200 rounded-lg p-2.5 bg-white focus:ring-2 focus:ring-emerald-500 outline-none">
                     </div>
                     <div>
-                        <label class="block text-[11px] font-semibold text-gray-600 mb-1">Teléfono *</label>
-                        <input type="tel" id="checkout-phone" placeholder="+34 ..." class="w-full text-xs border border-gray-200 rounded-lg p-2.5 bg-white focus:ring-2 focus:ring-emerald-500 outline-none">
+                        <label class="block text-[11px] font-semibold text-gray-600 mb-1">Phone *</label>
+                        <input type="tel" id="checkout-phone" placeholder="+44 7..." class="w-full text-xs border border-gray-200 rounded-lg p-2.5 bg-white focus:ring-2 focus:ring-emerald-500 outline-none">
                     </div>
                 </div>
 
                 <div>
-                    <label class="block text-[11px] font-semibold text-gray-600 mb-1">Dirección completa *</label>
-                    <input type="text" id="checkout-address" placeholder="Calle, ciudad, país, código postal..." class="w-full text-xs border border-gray-200 rounded-lg p-2.5 bg-white focus:ring-2 focus:ring-emerald-500 outline-none">
+                    <label class="block text-[11px] font-semibold text-gray-600 mb-1">Full delivery address *</label>
+                    <input type="text" id="checkout-address" placeholder="Street, city, postcode, country..." class="w-full text-xs border border-gray-200 rounded-lg p-2.5 bg-white focus:ring-2 focus:ring-emerald-500 outline-none">
                 </div>
 
                 <div class="flex justify-between items-center text-base font-bold pt-3 border-t border-gray-200 text-gray-900">
-                    <span>Total a pagar:</span>
-                    <span id="cart-total" class="text-emerald-700 text-xl font-black">0.00 €</span>
+                    <span>Total:</span>
+                    <span id="cart-total" class="text-emerald-700 text-xl font-black">£0.00</span>
                 </div>
 
                 <button onclick="checkoutStripe()" id="checkout-btn" class="w-full bg-emerald-700 hover:bg-emerald-800 text-white py-3.5 rounded-xl font-bold transition shadow-md flex items-center justify-center space-x-2">
-                    <span>Pagar con Stripe 💳</span>
+                    <span>Pay securely with Stripe 💳</span>
                 </button>
             </div>
         </div>
@@ -102,11 +121,13 @@
 
     <script>
         /* Catalog is fetched from the server — the server is the single
-           source of truth for prices (base cost × 2.5 markup, EUR). */
+           source of truth for prices (base cost × 2.5, GBP). */
         let products = [];
         let cart = [];
         let currentCategory = 'all';
         let cardQuantities = {};
+
+        const gbp = new Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP' });
 
         async function loadProducts() {
             try {
@@ -116,7 +137,7 @@
                 renderCategories();
                 renderProducts();
             } catch (e) {
-                document.getElementById('loading').innerText = 'No se pudo cargar el catálogo. Recarga la página.';
+                document.getElementById('loading').innerText = 'Could not load the catalogue. Please refresh the page.';
             }
         }
 
@@ -130,11 +151,11 @@
             const counts = getCategoryCounts();
             const container = document.getElementById('category-buttons');
             const categories = [
-                { id: 'all', name: 'Todo' },
-                { id: 'eyes', name: 'Ojos y Cejas' },
-                { id: 'face', name: 'Cuidado Facial' },
-                { id: 'body', name: 'Cuerpo e Higiene' },
-                { id: 'hair', name: 'Cabello y Champús' }
+                { id: 'all', name: 'All products' },
+                { id: 'eyes', name: 'Eyes & Brows' },
+                { id: 'face', name: 'Facial Care' },
+                { id: 'body', name: 'Body & Hygiene' },
+                { id: 'hair', name: 'Hair & Shampoos' }
             ];
 
             container.innerHTML = categories.map(cat => {
@@ -155,7 +176,7 @@
             const filtered = currentCategory === 'all' ? products : products.filter(p => p.category === currentCategory);
 
             filtered.forEach(p => {
-                const finalPrice = p.price.toFixed(2);
+                const finalPrice = gbp.format(p.price);
                 if (cardQuantities[p.id] === undefined) cardQuantities[p.id] = 1;
                 const qty = cardQuantities[p.id];
 
@@ -172,7 +193,7 @@
                     </div>
                     <div class="p-4 pt-0 space-y-3">
                         <div class="flex items-center justify-between">
-                            <span class="text-base sm:text-lg font-black text-emerald-700">${finalPrice} €</span>
+                            <span class="text-base sm:text-lg font-black text-emerald-700">${finalPrice}</span>
                             <div class="flex items-center border border-gray-200 rounded-xl overflow-hidden bg-gray-50">
                                 <button onclick="changeCardQty(${p.id}, -1)" class="px-2.5 py-1 text-gray-600 hover:bg-gray-200 font-bold text-xs">−</button>
                                 <span class="px-2.5 text-xs font-bold text-gray-800">${qty}</span>
@@ -180,7 +201,7 @@
                             </div>
                         </div>
                         <button onclick="addToCart(${p.id})" class="w-full bg-gray-900 hover:bg-emerald-700 text-white py-2.5 rounded-xl text-xs font-bold transition">
-                            Añadir al carrito
+                            Add to basket
                         </button>
                     </div>
                 `;
@@ -208,8 +229,8 @@
             container.innerHTML = '';
 
             if (cart.length === 0) {
-                container.innerHTML = `<div class="text-center py-12 text-gray-400 text-sm">Tu carrito está vacío</div>`;
-                document.getElementById('cart-total').innerText = '0.00 €';
+                container.innerHTML = `<div class="text-center py-12 text-gray-400 text-sm">Your basket is empty</div>`;
+                document.getElementById('cart-total').innerText = '£0.00';
                 return;
             }
 
@@ -225,14 +246,14 @@
                         <img src="${item.image}" class="w-12 h-12 object-cover rounded-xl border border-gray-100" alt="">
                         <div>
                             <h4 class="text-xs font-semibold text-gray-800 w-36 truncate">${item.name}</h4>
-                            <p class="text-xs text-gray-500">${item.price.toFixed(2)} € × ${item.qty} = <span class="font-bold text-emerald-700">${itemTotal.toFixed(2)} €</span></p>
+                            <p class="text-xs text-gray-500">${gbp.format(item.price)} × ${item.qty} = <span class="font-bold text-emerald-700">${gbp.format(itemTotal)}</span></p>
                         </div>
                     </div>
                     <button onclick="removeFromCart(${item.id})" class="text-gray-400 hover:text-red-500 text-lg font-bold p-1">&times;</button>
                 `;
                 container.appendChild(div);
             });
-            document.getElementById('cart-total').innerText = total.toFixed(2) + ' €';
+            document.getElementById('cart-total').innerText = gbp.format(total);
         }
 
         function removeFromCart(id) { cart = cart.filter(item => item.id !== id); updateCartUI(); }
@@ -242,7 +263,7 @@
         }
 
         async function checkoutStripe() {
-            if (cart.length === 0) { alert('El carrito está vacío.'); return; }
+            if (cart.length === 0) { alert('Your basket is empty.'); return; }
 
             const name = document.getElementById('checkout-name').value.trim();
             const surname = document.getElementById('checkout-surname').value.trim();
@@ -251,13 +272,13 @@
             const address = document.getElementById('checkout-address').value.trim();
 
             if (!name || !surname || !email || !phone || !address) {
-                alert('Por favor, completa todos los campos obligatorios de datos y dirección.');
+                alert('Please complete all required contact and delivery fields.');
                 return;
             }
 
             const btn = document.getElementById('checkout-btn');
             btn.disabled = true;
-            btn.innerText = 'Conectando con Stripe…';
+            btn.innerText = 'Connecting to Stripe…';
 
             try {
                 const response = await fetch('/create-checkout-session', {
@@ -274,15 +295,15 @@
                 if (data.url) {
                     window.location.href = data.url;
                 } else {
-                    alert('Error: ' + (data.error || 'No se pudo crear la sesión de pago'));
+                    alert('Error: ' + (data.error || 'Could not start the payment session'));
                     btn.disabled = false;
-                    btn.innerText = 'Pagar con Stripe 💳';
+                    btn.innerText = 'Pay securely with Stripe 💳';
                 }
             } catch (err) {
                 console.error(err);
-                alert('Error de red al conectar con el servidor de pagos.');
+                alert('Network error while connecting to the payment server.');
                 btn.disabled = false;
-                btn.innerText = 'Pagar con Stripe 💳';
+                btn.innerText = 'Pay securely with Stripe 💳';
             }
         }
 
