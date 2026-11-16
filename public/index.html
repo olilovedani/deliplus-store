@@ -152,10 +152,12 @@
             const container = document.getElementById('category-buttons');
             const categories = [
                 { id: 'all', name: 'All products' },
+                { id: 'makeup', name: 'Makeup' },
                 { id: 'eyes', name: 'Eyes & Brows' },
+                { id: 'lips', name: 'Lips' },
                 { id: 'face', name: 'Facial Care' },
-                { id: 'body', name: 'Body & Hygiene' },
-                { id: 'hair', name: 'Hair & Shampoos' }
+                { id: 'body', name: 'Body Care' },
+                { id: 'hair', name: 'Hair Care' }
             ];
 
             container.innerHTML = categories.map(cat => {
