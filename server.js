@@ -105,6 +105,7 @@ app.post('/webhook', express.raw({ type: 'application/json' }), (req, res) => {
 });
 
 app.use(express.json());
+require('./seo')(app, productsData.products, path.join(__dirname, 'public'));
 app.use(express.static(path.join(__dirname, 'public')));
 
 /* Public catalog — the browser never sends prices, only ids + quantities */
@@ -187,6 +188,7 @@ app.post('/create-checkout-session', async (req, res) => {
 });
 
 const PORT = process.env.PORT || 3000;
+app.use((req, res) => res.status(404).sendFile(path.join(__dirname, 'public', '404.html')));
 app.listen(PORT, () => {
   console.log(`Deliplus UK store server running on port ${PORT}${MOCK_STRIPE ? ' (MOCK STRIPE MODE)' : ''}`);
 });

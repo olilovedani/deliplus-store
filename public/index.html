@@ -136,6 +136,8 @@
                 document.getElementById('loading').remove();
                 renderCategories();
                 renderProducts();
+                const addId = parseInt(new URLSearchParams(window.location.search).get('add'), 10);
+                if (addId && products.find(p => p.id === addId)) { addToCart(addId); history.replaceState(null, '', '/'); }
             } catch (e) {
                 document.getElementById('loading').innerText = 'Could not load the catalogue. Please refresh the page.';
             }
