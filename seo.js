@@ -111,7 +111,7 @@ ${INDEPENDENT}
 ${faqHtml}
 <h2 id="all-products">All products</h2>
 </section>`;
-    let out = raw.replace('        <div id="product-grid"', `${ssr}\n        <div id="product-grid"`);
+    let out = raw.replace('    <footer', `${ssr}\n    <footer`);
     out = out.replace('</head>', `${GA_SNIPPET}
 <script type="application/ld+json">${JSON.stringify({ '@context': 'https://schema.org', '@type': 'Organization', name: 'Deliplus UK', url: BASE + '/', description: 'Independent UK retailer of authentic Deliplus Spanish cosmetics.', /* PLACEHOLDER-OWNER: legal company name, registration number and address to be added */ })}</script>
 <script type="application/ld+json">${JSON.stringify({ '@context': 'https://schema.org', '@type': 'WebSite', name: 'Deliplus UK', url: BASE + '/' })}</script>
