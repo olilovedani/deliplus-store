@@ -96,22 +96,38 @@ ${body}
     ];
     const faqHtml = `<h2>Frequently asked questions</h2><dl>${faq.map(([q, a]) => `<dt>${esc(q)}</dt><dd>${esc(a)}</dd>`).join('')}</dl>`;
     const ssr = `
-<section id="ssr-seo">
-<h1>Shop Authentic Deliplus Spanish Cosmetics Online in the UK</h1>
-<p>Deliplus UK sells <strong>authentic Deliplus cosmetics and beauty products</strong> — the own-brand beauty range of the Spanish supermarket Mercadona — to customers across England, Scotland, Wales and Northern Ireland, with worldwide delivery also available. Browse <strong>${products.filter(p => p.inStock).length} products</strong> across makeup, eyes &amp; brows, lips, facial care, body care and hair care, all priced in GBP and paid for securely through Stripe.</p>
-<h2>Shop by category</h2>
-<ul class="catlist">${catLinks}</ul>
-<h2>Featured products</h2>
-<div class="grid">${feat}</div>
-<h2>Why order from Deliplus UK</h2>
-<ul><li>Authentic Deliplus products sourced directly from Spain</li><li>UK-wide delivery to England, Scotland, Wales and Northern Ireland (2–4 business days, £3.95)</li><li>Worldwide shipping to Europe, the Americas, Asia and Oceania</li><li>Secure card payments in GBP via Stripe Checkout</li><li>Clear prices in British Pounds — no surprise currency conversion at checkout</li></ul>
-<h2>About Deliplus</h2>
-<p>Deliplus is the cosmetics and personal-care brand sold by Mercadona, one of Spain\u2019s largest supermarket chains. The range covers make-up, facial care, body care and hair care at accessible prices, and has a strong following in Spain and beyond. Deliplus UK imports and resells these products so UK customers can order without travelling to Spain.</p>
-${INDEPENDENT}
-${faqHtml}
-<h2 id="all-products">All products</h2>
+<section id="ssr-seo" class="max-w-7xl mx-auto px-4 sm:px-6 py-10">
+<h1 class="text-2xl sm:text-3xl font-black text-[#0F172A] mb-4">Shop Authentic Deliplus Spanish Cosmetics Online in the UK</h1>
+<p class="text-sm text-gray-600 max-w-3xl leading-relaxed">Deliplus UK sells <strong>authentic Deliplus cosmetics and beauty products</strong> — the own-brand beauty range of the Spanish supermarket Mercadona — to customers across England, Scotland, Wales and Northern Ireland, with worldwide delivery also available. Browse <strong>${products.filter(p => p.inStock).length} products</strong> across makeup, eyes &amp; brows, lips, facial care, body care and hair care, all priced in GBP and paid for securely through Stripe.</p>
+<h2 class="text-lg font-black mt-8 mb-3">Shop by category</h2>
+<ul class="flex flex-wrap gap-2.5 list-none p-0 m-0">${Object.entries(CATS).map(([slug, c]) => `<li><a class="bg-[#F1F5F9] hover:bg-[#E2E8F0] border border-[#E2E8F0] rounded-2xl px-4 py-2 text-sm font-semibold text-[#1E293B] no-underline" href="/category/${slug}/">${c.label} <span class="text-[11px] bg-[#E2E8F0] text-[#334155] rounded-full px-2 py-0.5">${byCat(slug).length}</span></a></li>`).join('')}</ul>
+<h2 class="text-lg font-black mt-10 mb-4">Featured products</h2>
+<div class="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">${featured.map(p => `
+  <div class="bg-white rounded-2xl border border-[#E2E8F0] shadow-sm flex flex-col overflow-hidden">
+    <a href="${prodSlug(p)}"><img src="${p.image}" alt="${p.name} — authentic Deliplus product" loading="lazy" class="w-full h-48 object-contain p-3"></a>
+    <div class="px-4 pb-4 flex flex-col gap-3 flex-1">
+      <a href="${prodSlug(p)}" class="text-[13px] leading-snug font-medium text-[#0F172A] no-underline line-clamp-2 min-h-[2.4rem]">${p.name}</a>
+      <span class="text-lg font-black text-[#007A48]">${gbp(p.retailPrice)}</span>
+      <a href="${prodSlug(p)}" class="mt-auto w-full bg-[#007A48] hover:bg-[#006838] text-white py-2.5 rounded-xl text-[13px] font-semibold text-center no-underline">Add to basket</a>
+      <a href="${prodSlug(p)}" class="w-full bg-white border border-[#E2E8F0] hover:border-[#006838] text-[#0F172A] py-2.5 rounded-xl text-[13px] font-semibold text-center no-underline">View product</a>
+    </div>
+  </div>`).join('')}</div>
+<h2 class="text-lg font-black mt-10 mb-3">Why order from Deliplus UK</h2>
+<ul class="list-disc pl-5 text-sm text-gray-600 space-y-1"><li>Authentic Deliplus products sourced directly from Spain</li><li>UK-wide delivery to England, Scotland, Wales and Northern Ireland (2–4 business days, £3.95)</li><li>Worldwide shipping to Europe, the Americas, Asia and Oceania</li><li>Secure card payments in GBP via Stripe Checkout</li><li>Clear prices in British Pounds — no surprise currency conversion at checkout</li></ul>
+<h2 class="text-lg font-black mt-8 mb-2">About Deliplus</h2>
+<p class="text-sm text-gray-600 max-w-3xl">Deliplus is the cosmetics and personal-care brand sold by Mercadona, one of Spain's largest supermarket chains. The range covers make-up, facial care, body care and hair care at accessible prices, and has a strong following in Spain and beyond. Deliplus UK imports and resells these products so UK customers can order without travelling to Spain.</p>
+<p class="text-xs italic text-gray-500 mt-2">Deliplus UK is an independent retailer of Deliplus products and is not owned by, affiliated with or an authorised distributor for Mercadona, S.A. Products are sourced from Spain.</p>
+<h2 class="text-lg font-black mt-8 mb-2">Frequently asked questions</h2>
+<dl class="text-sm text-gray-600">${faq.map(([q, a]) => `<dt class="font-bold text-[#0F172A] mt-3">${esc(q)}</dt><dd class="ml-0 mt-1">${esc(a)}</dd>`).join('')}</dl>
+<h2 id="all-products" class="text-lg font-black mt-10">All products</h2>
 </section>`;
-    let out = raw.replace('    <footer', `${ssr}\n    <footer`);
+    const tabsSsr = `<button class="px-4 py-2 rounded-2xl text-xs sm:text-sm font-semibold bg-[#006838] text-white shadow-sm flex items-center gap-2"><span>All products</span><span class="text-[11px] px-2 py-0.5 rounded-full bg-[#005934] text-white">${products.filter(p => p.inStock).length}</span></button>` +
+      Object.entries(CATS).map(([s, c]) => `<a href="#${s}" class="px-4 py-2 rounded-2xl text-xs sm:text-sm font-semibold bg-[#F1F5F9] text-[#1E293B] hover:bg-[#E2E8F0] flex items-center gap-2 no-underline"><span>${c.label}</span><span class="text-[11px] px-2 py-0.5 rounded-full bg-[#E2E8F0] text-[#334155]">${byCat(s).length}</span></a>`).join('');
+    let out = raw.replace(
+      '<div id="category-buttons" class="max-w-7xl mx-auto px-4 sm:px-6 overflow-x-auto py-3 flex gap-2.5 no-scrollbar"></div>',
+      `<div id="category-buttons" class="max-w-7xl mx-auto px-4 sm:px-6 overflow-x-auto py-3 flex gap-2.5 no-scrollbar">${tabsSsr}</div>`
+    );
+    out = out.replace('    <footer', `${ssr}\n    <footer`);
     out = out.replace('</head>', `${GA_SNIPPET}
 <script type="application/ld+json">${JSON.stringify({ '@context': 'https://schema.org', '@type': 'Organization', name: 'Deliplus UK', url: BASE + '/', description: 'Independent UK retailer of authentic Deliplus Spanish cosmetics.', /* PLACEHOLDER-OWNER: legal company name, registration number and address to be added */ })}</script>
 <script type="application/ld+json">${JSON.stringify({ '@context': 'https://schema.org', '@type': 'WebSite', name: 'Deliplus UK', url: BASE + '/' })}</script>
