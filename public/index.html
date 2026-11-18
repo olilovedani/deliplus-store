@@ -251,7 +251,7 @@
         function changeCardQty(id, delta) {
             const next = Math.min(99, Math.max(1, (cardQuantities[id] || 1) + delta));
             cardQuantities[id] = next;
-            document.getElementById('card-qty-' + id).innerText = next;
+            document.getElementById('card-qty-' + id).textContent = next;
         }
 
         function toggleWishlist(id, btn) {
@@ -276,20 +276,20 @@
             const existing = cart.find(item => item.id === id);
             if (existing) { existing.qty += qtyToAdd; } else { cart.push({ ...product, qty: qtyToAdd }); }
             cardQuantities[id] = 1;
-            const el = document.getElementById('card-qty-' + id); if (el) el.innerText = 1;
+            const el = document.getElementById('card-qty-' + id); if (el) el.textContent = 1;
             updateCartUI();
             toggleCart(true);
         }
 
         function updateCartUI() {
             const count = cart.reduce((sum, item) => sum + item.qty, 0);
-            document.getElementById('cart-count').innerText = count;
+            document.getElementById('cart-count').textContent = count;
             const container = document.getElementById('cart-items');
             container.innerHTML = '';
 
             if (cart.length === 0) {
                 container.innerHTML = `<div class="text-center py-12 text-gray-400 text-sm">Your basket is empty</div>`;
-                document.getElementById('cart-total').innerText = '£0.00';
+                document.getElementById('cart-total').textContent = '£0.00';
                 return;
             }
 
@@ -310,7 +310,7 @@
                     <button onclick="removeFromCart(${item.id})" class="text-gray-400 hover:text-red-500 text-lg font-bold p-1">&times;</button>`;
                 container.appendChild(div);
             });
-            document.getElementById('cart-total').innerText = gbp.format(total);
+            document.getElementById('cart-total').textContent = gbp.format(total);
         }
 
         function removeFromCart(id) { cart = cart.filter(item => item.id !== id); updateCartUI(); }
@@ -332,6 +332,51 @@
             const hashCat = (location.hash || '').replace('#', '') || 'all';
             if (CATEGORIES.some(c => c.id === hashCat)) filterCategory(hashCat, false);
         });
+
+        async function checkoutStripe() {
+            if (cart.length === 0) { alert('Your basket is empty.'); return; }
+
+            const name = document.getElementById('checkout-name').value.trim();
+            const surname = document.getElementById('checkout-surname').value.trim();
+            const email = document.getElementById('checkout-email').value.trim();
+            const phone = document.getElementById('checkout-phone').value.trim();
+            const address = document.getElementById('checkout-address').value.trim();
+
+            if (!name || !surname || !email || !phone || !address) {
+                alert('Please complete all required contact and delivery fields.');
+                return;
+            }
+
+            const btn = document.getElementById('checkout-btn');
+            btn.disabled = true;
+            btn.textContent = 'Connecting to Stripe…';
+
+            try {
+                const response = await fetch('/create-checkout-session', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        /* Only ids + quantities are sent — the server prices the order */
+                        cart: cart.map(i => ({ id: i.id, qty: i.qty })),
+                        customer: { name, surname, email, phone, address }
+                    })
+                });
+
+                const data = await response.json();
+                if (data.url) {
+                    window.location.href = data.url;
+                } else {
+                    alert('Error: ' + (data.error || 'Could not start the payment session'));
+                    btn.disabled = false;
+                    btn.textContent = 'Pay securely with Stripe 💳';
+                }
+            } catch (err) {
+                console.error(err);
+                alert('Network error while connecting to the payment server.');
+                btn.disabled = false;
+                btn.textContent = 'Pay securely with Stripe 💳';
+            }
+        }
 
         bindSearch('product-search');
         bindSearch('product-search-mobile');
