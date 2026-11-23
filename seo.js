@@ -483,7 +483,7 @@ async function submitContact(ev) {
     'terms': { title: 'Terms & Conditions | Deliplus UK',
       body: `<h1>Terms &amp; Conditions</h1><p>These terms apply to orders placed on deliplus.uk. Last updated: 17 November 2026.</p>
 <h2>Who we are</h2><p>Deliplus UK is an independent retailer of Deliplus-brand cosmetics sourced from Spain. We are not affiliated with or an authorised distributor for Mercadona, S.A. The trader behind this website is <strong>SLU Deliplus UK</strong>, 85 Great Portland St, Harley St, London W1W 7LT, United Kingdom (email: <a href="mailto:client@deliplus.uk">client@deliplus.uk</a>).</p>
-<h2>Orders and pricing</h2><p>Prices are in GBP. <span class="placeholder">[OWNER TO CONFIRM: VAT treatment of imported cosmetics before launch.]</span> An order is accepted when payment succeeds via Stripe Checkout; you will see an order reference on the confirmation page.</p>
+<h2>Orders and pricing</h2><p>Prices are in GBP. An order is accepted when payment succeeds via Stripe Checkout; you will see an order reference on the confirmation page.</p>
 <h2>Delivery</h2><p>Delivery options and times are shown at checkout and summarised on the <a href="/shipping-to-uk/">shipping page</a>. Risk passes to you on delivery.</p>
 <h2>Returns</h2><p>See the <a href="/returns-refunds/">returns &amp; refunds policy</a>, which forms part of these terms.</p>
 <h2>Liability and law</h2><p>Nothing in these terms limits your statutory rights as a UK consumer. These terms are governed by the laws of England and Wales, and the courts of England and Wales have non-exclusive jurisdiction over any dispute.</p>` }
