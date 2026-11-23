@@ -67,8 +67,31 @@ ${ld}
 <div class="wrap">${crumbHtml ? `<nav class="crumbs" aria-label="Breadcrumb">${crumbHtml}</nav>` : ''}
 ${body}
 </div>
-<footer>© Deliplus UK · Independent retailer of authentic Spanish cosmetics · Secure payments by Stripe<br>
+<footer><strong>SLU Deliplus UK</strong> · 85 Great Portland St, Harley St, London W1W 7LT, United Kingdom · <a href="mailto:client@deliplus.uk" style="color:#a7f3d0">client@deliplus.uk</a><br>© Deliplus UK · Independent retailer of authentic Spanish cosmetics · Secure payments by Stripe<br>
 <a href="/about-deliplus/">About Deliplus</a> · <a href="/shipping-to-uk/">Shipping to the UK</a> · <a href="/returns-refunds/">Returns &amp; Refunds</a> · <a href="/contact/">Contact</a> · <a href="/faq/">FAQ</a> · <a href="/privacy-policy/">Privacy</a> · <a href="/terms/">Terms</a> · <a href="/blog/">Blog</a></footer>
+<script>
+async function submitReview(ev, id) {
+  ev.preventDefault();
+  const form = document.getElementById('review-form-' + id);
+  const s = document.getElementById('rv-status-' + id);
+  s.textContent = 'Sending…';
+  try {
+    const r = await fetch('/api/contact', { method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name: document.getElementById('rv-name-' + id).value.trim(),
+        email: document.getElementById('rv-email-' + id).value.trim(),
+        rating: document.getElementById('rv-rating-' + id).value,
+        orderRef: '',
+        message: 'PRODUCT REVIEW for ' + form.dataset.product + ' (SKU ' + form.dataset.sku + '):\n\n' + document.getElementById('rv-text-' + id).value.trim(),
+        website: document.getElementById('rv-website-' + id).value
+      })});
+    const d = await r.json();
+    if (d.ok) { s.textContent = 'Thank you! Your review has been submitted and will be published after moderation.'; form.reset(); }
+    else s.textContent = 'Error: ' + (d.error || 'please try again');
+  } catch (e) { s.textContent = 'Network error — please email client@deliplus.uk.'; }
+  return false;
+}
+</script>
 </body>
 </html>`;
     return { status, html };
@@ -129,7 +152,7 @@ ${body}
     );
     out = out.replace('    <footer', `${ssr}\n    <footer`);
     out = out.replace('</head>', `${GA_SNIPPET}
-<script type="application/ld+json">${JSON.stringify({ '@context': 'https://schema.org', '@type': 'Organization', name: 'Deliplus UK', url: BASE + '/', description: 'Independent UK retailer of authentic Deliplus Spanish cosmetics.', /* PLACEHOLDER-OWNER: legal company name, registration number and address to be added */ })}</script>
+<script type="application/ld+json">${JSON.stringify({ '@context': 'https://schema.org', '@type': 'Organization', name: 'SLU Deliplus UK', legalName: 'SLU Deliplus UK', url: BASE + '/', email: 'client@deliplus.uk', description: 'Independent UK retailer of authentic Deliplus Spanish cosmetics.', address: { '@type': 'PostalAddress', streetAddress: '85 Great Portland St, Harley St', addressLocality: 'London', postalCode: 'W1W 7LT', addressCountry: 'GB' } })}</script>
 <script type="application/ld+json">${JSON.stringify({ '@context': 'https://schema.org', '@type': 'WebSite', name: 'Deliplus UK', url: BASE + '/' })}</script>
 <script type="application/ld+json">${JSON.stringify({ '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: faq.map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a } })) })}</script>
 </head>`);
@@ -202,12 +225,25 @@ ${INDEPENDENT}
 <p class="meta">You will be taken to the main store page with this item added to your basket. Checkout is handled securely by Stripe in GBP.</p>
 <h2>Delivery &amp; returns</h2>
 <p>UK standard delivery £3.95 (2–4 business days). Europe £6.95 (5–8 business days). Worldwide £12.95 (8–15 business days). See <a href="/shipping-to-uk/">shipping details</a> and the <a href="/returns-refunds/">returns policy</a>.</p>
+<h2>Seller information</h2>
+<p><strong>SLU Deliplus UK</strong> · 85 Great Portland St, Harley St, London W1W 7LT, United Kingdom · <a href="mailto:client@deliplus.uk">client@deliplus.uk</a> · <a href="/about-deliplus/">About us</a></p>
+<h2>Reviews</h2>
+<p class="meta">We publish only genuine customer reviews and moderate every submission. There are no verified reviews for this product yet — if you have bought it, you can submit the first one below.</p>
+<form id="review-form-${p.id}" data-product="${esc(p.name)}" data-sku="${esc(p.sku)}" style="max-width:30rem;display:flex;flex-direction:column;gap:.6rem;margin:.5rem 0 1rem" onsubmit="return submitReview(event, ${p.id})">
+  <input type="text" id="rv-name-${p.id}" placeholder="Your name *" required style="padding:.6rem;border:1px solid #e5e7eb;border-radius:.6rem">
+  <input type="email" id="rv-email-${p.id}" placeholder="Your email (not published) *" required style="padding:.6rem;border:1px solid #e5e7eb;border-radius:.6rem">
+  <select id="rv-rating-${p.id}" required style="padding:.6rem;border:1px solid #e5e7eb;border-radius:.6rem"><option value="">Your rating *</option><option value="5">★★★★★ Excellent</option><option value="4">★★★★ Good</option><option value="3">★★★ Average</option><option value="2">★★ Poor</option><option value="1">★ Very poor</option></select>
+  <textarea id="rv-text-${p.id}" rows="4" placeholder="Your review *" required style="padding:.6rem;border:1px solid #e5e7eb;border-radius:.6rem;font-family:inherit"></textarea>
+  <input type="text" id="rv-website-${p.id}" style="display:none" tabindex="-1" autocomplete="off">
+  <button type="submit" class="btn" style="background:#047857;border:none;cursor:pointer">Submit review</button>
+  <p id="rv-status-${p.id}" class="meta"></p>
+</form>
 ${related.length ? `<h2>Related products</h2><div class="grid">${related.map(productCard).join('')}</div>` : ''}`;
     const { status, html } = layout({
       title: `${p.name} | Buy Deliplus UK — ${gbp(p.retailPrice)}`,
       desc, canonical: url, body,
       jsonLd: [
-        { '@context': 'https://schema.org', '@type': 'Product', name: p.name, image: [p.image], description: desc, sku: p.sku, brand: { '@type': 'Brand', name: 'Deliplus' }, /* no GTIN/MPN: not verified — omitted rather than fabricated */ offers: { '@type': 'Offer', url, priceCurrency: 'GBP', price: p.retailPrice.toFixed(2), availability: p.inStock ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock', itemCondition: 'https://schema.org/NewCondition', seller: { '@type': 'Organization', name: 'Deliplus UK (independent retailer)' } } },
+        { '@context': 'https://schema.org', '@type': 'Product', name: p.name, image: [p.image], description: desc, sku: p.sku, brand: { '@type': 'Brand', name: 'Deliplus' }, /* no GTIN/MPN: not verified — omitted rather than fabricated */ offers: { '@type': 'Offer', url, priceCurrency: 'GBP', price: p.retailPrice.toFixed(2), availability: p.inStock ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock', itemCondition: 'https://schema.org/NewCondition', seller: { '@type': 'Organization', name: 'SLU Deliplus UK (independent retailer)' } } },
         { '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: [
           { '@type': 'ListItem', position: 1, name: 'Home', item: BASE + '/' },
           { '@type': 'ListItem', position: 2, name: cat.label, item: `${BASE}/category/${p.category}/` },
@@ -324,8 +360,41 @@ ${items}
     });
   });
 
+  /* ---------- CONTACT / REVIEW SUBMISSIONS (emailed to deliplus.uk@gmail.com via FormSubmit relay) ---------- */
+  const CONTACT_EMAIL = 'deliplus.uk@gmail.com';
+  app.post('/api/contact', async (req, res) => {
+    try {
+      const b = req.body || {};
+      if (b.website) return res.json({ ok: true, message: 'Thank you! Your message has been received.' }); // honeypot: silently drop bots
+      const name = String(b.name || '').trim().slice(0, 120);
+      const email = String(b.email || '').trim().slice(0, 200);
+      const orderRef = String(b.orderRef || '').trim().slice(0, 60);
+      const rating = String(b.rating || '').trim().slice(0, 1);
+      const message = String(b.message || '').trim().slice(0, 5000);
+      if (!name || !email || !message || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
+        return res.status(400).json({ ok: false, error: 'Please provide your name, a valid email and a message.' });
+      }
+      const subject = rating
+        ? `Product review submission (${rating}/5) — ${name}`
+        : `Website contact${orderRef ? ' — order ' + orderRef : ''} — ${name}`;
+      const r = await fetch(`https://formsubmit.co/ajax/${CONTACT_EMAIL}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify({ _subject: subject, _replyto: email, _template: 'table', name, email, orderRef: orderRef || '—', rating: rating ? rating + '/5' : '—', message })
+      });
+      const out = await r.json().catch(() => ({}));
+      if (r.ok) return res.json({ ok: true, message: 'Thank you! Your message has been sent — we will reply within 2 business days.' });
+      console.error('FormSubmit error:', r.status, JSON.stringify(out).slice(0, 200));
+      return res.status(502).json({ ok: false, error: 'Could not send your message right now — please email client@deliplus.uk directly.' });
+    } catch (e) {
+      console.error('Contact form error:', e.message);
+      return res.status(502).json({ ok: false, error: 'Could not send your message right now — please email client@deliplus.uk directly.' });
+    }
+  });
+
   /* ---------- TRUST / INFO PAGES ---------- */
-  const OWNER = '<p><strong><span class="placeholder">[PLACEHOLDER — OWNER TO COMPLETE]</span></strong> Registered business name, company number, registered address, contact email and VAT status must be inserted here by the site owner before launch. The business is the data controller for the purposes of UK GDPR.</p>';
+  const OWNER = `<p><strong>SLU Deliplus UK</strong><br>85 Great Portland St, Harley St, London W1W 7LT, United Kingdom<br>Email: <a href="mailto:client@deliplus.uk">client@deliplus.uk</a></p>
+<p class="meta">Company registration number and VAT status: to be added by the owner [placeholder]. "SLU" (Sociedad Limitada Unipersonal) is a Spanish company form — UK consumer law requires these registered trader details to be shown, so please supply the registration number when available.</p>`;
   const trust = {
     'about-deliplus': { title: 'About Deliplus UK | Independent Retailer of Spanish Cosmetics',
       body: `<h1>About Deliplus UK</h1><p>Deliplus UK is an <strong>independent online retailer</strong> selling authentic Deliplus cosmetics and beauty products to customers in the United Kingdom and worldwide.</p>
@@ -347,32 +416,63 @@ ${items}
       body: `<h1>Returns &amp; Refunds Policy</h1>
 <h2>Your right to cancel (UK distance-selling rules)</h2><p>Under the Consumer Contracts Regulations, you may cancel most online orders within <strong>14 days</strong> of receiving your goods and return them for a refund. <span class="placeholder">[PLACEHOLDER — OWNER TO COMPLETE: exact returns window, return address, condition requirements for cosmetics/hygiene items, and who pays return postage. This is a legal statement that must reflect the owner\u2019s actual policy.]</span></p>
 <h2>Damaged or incorrect items</h2><p>If an item arrives damaged or is not what you ordered, contact us with your order reference. <span class="placeholder">[PLACEHOLDER — OWNER TO COMPLETE: remedy process — replacement vs refund.]</span></p>
-<h2>How to request a return</h2><p>Contact us via the <a href="/contact/">contact page</a> with your order reference (shown on your success page and in your payment confirmation email).</p>` },
+<h2>How to request a return</h2><p>Email <a href="mailto:client@deliplus.uk">client@deliplus.uk</a> or use the <a href="/contact/">contact form</a> with your order reference (shown on your success page and in your payment confirmation email). We will confirm the return address and next steps. <span class="placeholder">[PLACEHOLDER — OWNER TO CONFIRM: who pays return postage, and whether returns are accepted only for unopened items.]</span></p>` },
     'contact': { title: 'Contact Deliplus UK | Customer Service',
-      body: `<h1>Contact us</h1><p>Questions about an order, a product or delivery? Contact us and include your order reference if you have one.</p>
-<h2>Customer service</h2><p><span class="placeholder">[PLACEHOLDER — OWNER TO COMPLETE: customer service email address, response time commitment, optional phone number and hours, and registered business address.]</span></p>
-<p>Orders are paid through Stripe; your payment confirmation email contains the order reference.</p>` },
+      body: `<h1>Contact us</h1><p>Questions about an order, a product or delivery? Send us a message using the form below — include your order reference if you have one (it is shown on your payment confirmation page and email).</p>
+<h2>Our details</h2><p><strong>SLU Deliplus UK</strong><br>85 Great Portland St, Harley St, London W1W 7LT, United Kingdom<br>Email: <a href="mailto:client@deliplus.uk">client@deliplus.uk</a></p>
+<p>We aim to reply within 2 business days. Orders are paid through Stripe.</p>
+<h2>Message form</h2>
+<form id="contact-form" style="max-width:30rem;display:flex;flex-direction:column;gap:.7rem" onsubmit="return submitContact(event)">
+  <input type="text" id="cf-name" placeholder="Your name *" required style="padding:.6rem;border:1px solid #e5e7eb;border-radius:.6rem">
+  <input type="email" id="cf-email" placeholder="Your email *" required style="padding:.6rem;border:1px solid #e5e7eb;border-radius:.6rem">
+  <input type="text" id="cf-order" placeholder="Order reference (optional)" style="padding:.6rem;border:1px solid #e5e7eb;border-radius:.6rem">
+  <textarea id="cf-message" rows="5" placeholder="Your message *" required style="padding:.6rem;border:1px solid #e5e7eb;border-radius:.6rem;font-family:inherit"></textarea>
+  <input type="text" id="cf-website" style="display:none" tabindex="-1" autocomplete="off">
+  <button type="submit" class="btn" style="background:#047857;border:none;cursor:pointer">Send message</button>
+  <p id="cf-status" class="meta"></p>
+</form>
+<script>
+async function submitContact(ev) {
+  ev.preventDefault();
+  const s = document.getElementById('cf-status');
+  s.textContent = 'Sending…';
+  try {
+    const r = await fetch('/api/contact', { method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name: document.getElementById('cf-name').value.trim(),
+        email: document.getElementById('cf-email').value.trim(),
+        orderRef: document.getElementById('cf-order').value.trim(),
+        message: document.getElementById('cf-message').value.trim(),
+        website: document.getElementById('cf-website').value
+      })});
+    const d = await r.json();
+    if (d.ok) { s.textContent = d.message; ev.target.reset(); }
+    else { s.textContent = 'Error: ' + (d.error || 'please try again'); }
+  } catch (e) { s.textContent = 'Network error — please email us directly at client@deliplus.uk.'; }
+  return false;
+}
+</script>` },
     'faq': { title: 'FAQ | Deliplus UK — Ordering, Delivery and Products',
       body: `<h1>Frequently asked questions</h1>
 <dl><dt>What is Deliplus?</dt><dd>Deliplus is the own-brand cosmetics and personal-care range of Mercadona, a Spanish supermarket chain. Deliplus UK is an independent online retailer selling authentic Deliplus products sourced from Spain.</dd>
 <dt>Do you deliver across the UK?</dt><dd>Yes — England, Scotland, Wales and Northern Ireland. UK standard delivery is £3.95 (2–4 business days). We also deliver to Europe (£6.95) and worldwide (£12.95).</dd>
 <dt>What currency are prices in?</dt><dd>All prices are in GBP and payment is processed securely through Stripe.</dd>
 <dt>Are you an official Mercadona store?</dt><dd>No. Deliplus UK is an independent retailer and is not affiliated with or an authorised distributor for Mercadona, S.A.</dd>
-<dt>How do I return an item?</dt><dd>See our <a href="/returns-refunds/">returns policy</a> — UK distance-selling rules give you a 14-day right to cancel most orders.</dd></dl>` },
+<dt>How do I return an item?</dt><dd>See our <a href="/returns-refunds/">returns policy</a> — UK distance-selling rules give you a 14-day right to cancel most orders.</dd><dt>How can I contact customer service?</dt><dd>Email <a href="mailto:client@deliplus.uk">client@deliplus.uk</a> or use the form on our <a href="/contact/">contact page</a> — we reply within 2 business days.</dd></dl>` },
     'privacy-policy': { title: 'Privacy Policy | Deliplus UK',
       body: `<h1>Privacy Policy</h1><p>This policy explains what personal data Deliplus UK collects and how it is used. Last updated: 17 November 2026.</p>
 <h2>What we collect</h2><p>When you place an order we collect the name, surname, email, phone number and delivery address you provide, plus the order contents and amount. Payments are processed by <strong>Stripe</strong>; we do not receive or store your full card details.</p>
 <h2>Why we process it</h2><p>To fulfil your order (contract), to keep legally required payment/accounting records (legal obligation), and to answer your queries (legitimate interest). We do not sell your data and we do not add you to marketing lists without consent.</p>
 <h2>Who we share it with</h2><p>Stripe (payment processing) and our delivery providers as needed to fulfil your order.</p>
-<h2>Retention, rights and contact</h2><p>Order records are kept as required by UK tax law. You have rights of access, rectification, erasure and objection under UK GDPR. <span class="placeholder">[PLACEHOLDER — OWNER TO COMPLETE: retention period, data-protection contact email, and the controller\u2019s registered identity.]</span></p>
+<h2>Retention, rights and contact</h2><p>The data controller is <strong>SLU Deliplus UK</strong>, 85 Great Portland St, Harley St, London W1W 7LT, United Kingdom (email: <a href="mailto:client@deliplus.uk">client@deliplus.uk</a>). Order records are kept for as long as required by applicable tax and accounting law (typically at least six years). You have rights of access, rectification, erasure and objection under UK GDPR — to exercise them, email <a href="mailto:client@deliplus.uk">client@deliplus.uk</a>. You may also complain to the ICO (ico.org.uk).</p>
 <h2>Cookies</h2><p>The store currently sets no tracking cookies of its own. If analytics are enabled in future, this policy and a consent banner will be updated first. <span class="placeholder">[PLACEHOLDER — OWNER TO COMPLETE if any analytics/marketing cookies are switched on: consent management per PECR.]</span></p>` },
     'terms': { title: 'Terms & Conditions | Deliplus UK',
       body: `<h1>Terms &amp; Conditions</h1><p>These terms apply to orders placed on deliplus.uk. Last updated: 17 November 2026.</p>
-<h2>Who we are</h2><p>Deliplus UK is an independent retailer of Deliplus-brand cosmetics sourced from Spain. We are not affiliated with or an authorised distributor for Mercadona, S.A. <span class="placeholder">[PLACEHOLDER — OWNER TO COMPLETE: legal name, company number and registered address.]</span></p>
+<h2>Who we are</h2><p>Deliplus UK is an independent retailer of Deliplus-brand cosmetics sourced from Spain. We are not affiliated with or an authorised distributor for Mercadona, S.A. The trader behind this website is <strong>SLU Deliplus UK</strong>, 85 Great Portland St, Harley St, London W1W 7LT, United Kingdom (email: <a href="mailto:client@deliplus.uk">client@deliplus.uk</a>). Company registration number and VAT status: to be added [placeholder].</p>
 <h2>Orders and pricing</h2><p>Prices are in GBP and include UK VAT where applicable. <span class="placeholder">[PLACEHOLDER — OWNER TO CONFIRM VAT treatment of imported cosmetics.]</span> An order is accepted when payment succeeds via Stripe Checkout; you will see an order reference on the confirmation page.</p>
 <h2>Delivery</h2><p>Delivery options and times are shown at checkout and summarised on the <a href="/shipping-to-uk/">shipping page</a>. Risk passes to you on delivery.</p>
 <h2>Returns</h2><p>See the <a href="/returns-refunds/">returns &amp; refunds policy</a>, which forms part of these terms.</p>
-<h2>Liability and law</h2><p>Nothing in these terms limits your statutory rights as a UK consumer. <span class="placeholder">[PLACEHOLDER — OWNER TO COMPLETE: governing-law statement — typically England &amp; Wales or Scotland depending on the business\u2019s domicile.]</span></p>` }
+<h2>Liability and law</h2><p>Nothing in these terms limits your statutory rights as a UK consumer. These terms are governed by the laws of England and Wales, and the courts of England and Wales have non-exclusive jurisdiction over any dispute.</p>` }
   };
   Object.entries(trust).forEach(([slug, pg]) => {
     app.get(`/${slug}/`, (req, res) => {
