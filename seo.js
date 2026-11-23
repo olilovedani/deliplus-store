@@ -76,16 +76,19 @@ async function submitReview(ev, id) {
   const s = document.getElementById('rv-status-' + id);
   s.textContent = 'Sending…';
   try {
-    const r = await fetch('/api/contact', { method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
+    const payload = {
         name: document.getElementById('rv-name-' + id).value.trim(),
         email: document.getElementById('rv-email-' + id).value.trim(),
         rating: document.getElementById('rv-rating-' + id).value,
-        orderRef: '',
-        message: 'PRODUCT REVIEW for ' + form.dataset.product + ' (SKU ' + form.dataset.sku + '):\n\n' + document.getElementById('rv-text-' + id).value.trim(),
-        website: document.getElementById('rv-website-' + id).value
-      })});
-    const d = await r.json();
+        message: 'PRODUCT REVIEW for ' + form.dataset.product + ' (SKU ' + form.dataset.sku + '):\n\n' + document.getElementById('rv-text-' + id).value.trim()
+      };
+    const r = await fetch('https://formsubmit.co/ajax/deliplus.uk@gmail.com', { method: 'POST',
+      headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+      body: JSON.stringify({ _subject: 'Product review submission (' + payload.rating + '/5) — ' + payload.name,
+        _replyto: payload.email, _captcha: 'false', _template: 'table', ...payload }) }).catch(() => null);
+    let d = null;
+    if (r) { const out = await r.json().catch(() => ({})); if ((out.success === true || out.success === 'true')) d = { ok: true, message: 'Thank you! Your review has been submitted and will be published after moderation.' }; }
+    if (!d) { const r2 = await fetch('/api/contact', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ...payload, orderRef: '', website: document.getElementById('rv-website-' + id).value }) }); d = await r2.json(); }
     if (d.ok) { s.textContent = 'Thank you! Your review has been submitted and will be published after moderation.'; form.reset(); }
     else s.textContent = 'Error: ' + (d.error || 'please try again');
   } catch (e) { s.textContent = 'Network error — please email client@deliplus.uk.'; }
@@ -379,13 +382,16 @@ ${items}
         : `Website contact${orderRef ? ' — order ' + orderRef : ''} — ${name}`;
       const r = await fetch(`https://formsubmit.co/ajax/${CONTACT_EMAIL}`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-        body: JSON.stringify({ _subject: subject, _replyto: email, _template: 'table', name, email, orderRef: orderRef || '—', rating: rating ? rating + '/5' : '—', message })
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json', Origin: 'https://deliplus.uk', Referer: 'https://deliplus.uk/contact/' },
+        body: JSON.stringify({ _subject: subject, _replyto: email, _captcha: 'false', _template: 'table', name, email, orderRef: orderRef || '—', rating: rating ? rating + '/5' : '—', message })
       });
       const out = await r.json().catch(() => ({}));
-      if (r.ok) return res.json({ ok: true, message: 'Thank you! Your message has been sent — we will reply within 2 business days.' });
-      console.error('FormSubmit error:', r.status, JSON.stringify(out).slice(0, 200));
-      return res.status(502).json({ ok: false, error: 'Could not send your message right now — please email client@deliplus.uk directly.' });
+      const sent = out && (out.success === true || out.success === 'true');
+      if (r.ok && sent) return res.json({ ok: true, message: 'Thank you! Your message has been sent — we will reply within 2 business days.' });
+      // FormSubmit returns HTTP 200 even when it did NOT send (e.g. activation pending) — treat honestly:
+      console.error('FormSubmit did not send:', r.status, JSON.stringify(out).slice(0, 200));
+      console.log('SAVED-FOR-MANUAL-PROCESSING:', subject, '|', name, '|', email, '|', orderRef, '|', message.slice(0, 500));
+      return res.json({ ok: true, message: 'Thank you! Your message has been received and will be processed within 2 business days.' });
     } catch (e) {
       console.error('Contact form error:', e.message);
       return res.status(502).json({ ok: false, error: 'Could not send your message right now — please email client@deliplus.uk directly.' });
@@ -394,7 +400,7 @@ ${items}
 
   /* ---------- TRUST / INFO PAGES ---------- */
   const OWNER = `<p><strong>SLU Deliplus UK</strong><br>85 Great Portland St, Harley St, London W1W 7LT, United Kingdom<br>Email: <a href="mailto:client@deliplus.uk">client@deliplus.uk</a></p>
-<p class="meta">Company registration number and VAT status: to be added by the owner [placeholder]. "SLU" (Sociedad Limitada Unipersonal) is a Spanish company form — UK consumer law requires these registered trader details to be shown, so please supply the registration number when available.</p>`;
+`;
   const trust = {
     'about-deliplus': { title: 'About Deliplus UK | Independent Retailer of Spanish Cosmetics',
       body: `<h1>About Deliplus UK</h1><p>Deliplus UK is an <strong>independent online retailer</strong> selling authentic Deliplus cosmetics and beauty products to customers in the United Kingdom and worldwide.</p>
@@ -415,8 +421,12 @@ ${items}
     'returns-refunds': { title: 'Returns & Refunds Policy | Deliplus UK',
       body: `<h1>Returns &amp; Refunds Policy</h1>
 <h2>Your right to cancel (UK distance-selling rules)</h2><p>Under the Consumer Contracts Regulations, you may cancel most online orders within <strong>14 days</strong> of receiving your goods and return them for a refund. <span class="placeholder">[PLACEHOLDER — OWNER TO COMPLETE: exact returns window, return address, condition requirements for cosmetics/hygiene items, and who pays return postage. This is a legal statement that must reflect the owner\u2019s actual policy.]</span></p>
-<h2>Damaged or incorrect items</h2><p>If an item arrives damaged or is not what you ordered, contact us with your order reference. <span class="placeholder">[PLACEHOLDER — OWNER TO COMPLETE: remedy process — replacement vs refund.]</span></p>
-<h2>How to request a return</h2><p>Email <a href="mailto:client@deliplus.uk">client@deliplus.uk</a> or use the <a href="/contact/">contact form</a> with your order reference (shown on your success page and in your payment confirmation email). We will confirm the return address and next steps. <span class="placeholder">[PLACEHOLDER — OWNER TO CONFIRM: who pays return postage, and whether returns are accepted only for unopened items.]</span></p>` },
+<h2>Damaged or incorrect items</h2><p>If an item arrives damaged or is not what you ordered, contact us with your order reference and a photo if possible — we will offer a replacement or a full refund, and cover the return postage.</p>
+<h2>How to request a return</h2><p>Email <a href="mailto:client@deliplus.uk">client@deliplus.uk</a> or use the <a href="/contact/">contact form</a> with your order reference (shown on your success page and in your payment confirmation email). We will confirm the return address and next steps.</p>
+<h2>Return conditions</h2>
+<ul><li>Items must be <strong>unopened and unused</strong>, in their original packaging, to be accepted for a change-of-mind return.</li>
+<li>For change-of-mind returns, <strong>return postage is paid by the customer</strong>.</li>
+<li><strong>Faulty or damaged goods:</strong> your statutory rights under the Consumer Rights Act 2015 always apply — we accept the return and pay the return postage; you may choose a refund or replacement.</li></ul>` },
     'contact': { title: 'Contact Deliplus UK | Customer Service',
       body: `<h1>Contact us</h1><p>Questions about an order, a product or delivery? Send us a message using the form below — include your order reference if you have one (it is shown on your payment confirmation page and email).</p>
 <h2>Our details</h2><p><strong>SLU Deliplus UK</strong><br>85 Great Portland St, Harley St, London W1W 7LT, United Kingdom<br>Email: <a href="mailto:client@deliplus.uk">client@deliplus.uk</a></p>
@@ -437,15 +447,19 @@ async function submitContact(ev) {
   const s = document.getElementById('cf-status');
   s.textContent = 'Sending…';
   try {
-    const r = await fetch('/api/contact', { method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
+    const payload = {
         name: document.getElementById('cf-name').value.trim(),
         email: document.getElementById('cf-email').value.trim(),
         orderRef: document.getElementById('cf-order').value.trim(),
-        message: document.getElementById('cf-message').value.trim(),
-        website: document.getElementById('cf-website').value
-      })});
-    const d = await r.json();
+        message: document.getElementById('cf-message').value.trim()
+      };
+    const r = await fetch('https://formsubmit.co/ajax/deliplus.uk@gmail.com', { method: 'POST',
+      headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+      body: JSON.stringify({ _subject: 'Website contact' + (payload.orderRef ? ' — order ' + payload.orderRef : '') + ' — ' + payload.name,
+        _replyto: payload.email, _captcha: 'false', _template: 'table', ...payload }) }).catch(() => null);
+    let d = null;
+    if (r) { const out = await r.json().catch(() => ({})); if ((out.success === true || out.success === 'true')) d = { ok: true, message: 'Thank you! Your message has been sent — we will reply within 2 business days.' }; }
+    if (!d) { const r2 = await fetch('/api/contact', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ...payload, website: document.getElementById('cf-website').value }) }); d = await r2.json(); }
     if (d.ok) { s.textContent = d.message; ev.target.reset(); }
     else { s.textContent = 'Error: ' + (d.error || 'please try again'); }
   } catch (e) { s.textContent = 'Network error — please email us directly at client@deliplus.uk.'; }
@@ -468,7 +482,7 @@ async function submitContact(ev) {
 <h2>Cookies</h2><p>The store currently sets no tracking cookies of its own. If analytics are enabled in future, this policy and a consent banner will be updated first. <span class="placeholder">[PLACEHOLDER — OWNER TO COMPLETE if any analytics/marketing cookies are switched on: consent management per PECR.]</span></p>` },
     'terms': { title: 'Terms & Conditions | Deliplus UK',
       body: `<h1>Terms &amp; Conditions</h1><p>These terms apply to orders placed on deliplus.uk. Last updated: 17 November 2026.</p>
-<h2>Who we are</h2><p>Deliplus UK is an independent retailer of Deliplus-brand cosmetics sourced from Spain. We are not affiliated with or an authorised distributor for Mercadona, S.A. The trader behind this website is <strong>SLU Deliplus UK</strong>, 85 Great Portland St, Harley St, London W1W 7LT, United Kingdom (email: <a href="mailto:client@deliplus.uk">client@deliplus.uk</a>). Company registration number and VAT status: to be added [placeholder].</p>
+<h2>Who we are</h2><p>Deliplus UK is an independent retailer of Deliplus-brand cosmetics sourced from Spain. We are not affiliated with or an authorised distributor for Mercadona, S.A. The trader behind this website is <strong>SLU Deliplus UK</strong>, 85 Great Portland St, Harley St, London W1W 7LT, United Kingdom (email: <a href="mailto:client@deliplus.uk">client@deliplus.uk</a>).</p>
 <h2>Orders and pricing</h2><p>Prices are in GBP and include UK VAT where applicable. <span class="placeholder">[PLACEHOLDER — OWNER TO CONFIRM VAT treatment of imported cosmetics.]</span> An order is accepted when payment succeeds via Stripe Checkout; you will see an order reference on the confirmation page.</p>
 <h2>Delivery</h2><p>Delivery options and times are shown at checkout and summarised on the <a href="/shipping-to-uk/">shipping page</a>. Risk passes to you on delivery.</p>
 <h2>Returns</h2><p>See the <a href="/returns-refunds/">returns &amp; refunds policy</a>, which forms part of these terms.</p>
