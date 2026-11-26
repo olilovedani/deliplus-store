@@ -33,6 +33,13 @@ module.exports = function seo(app, products, publicDir) {
       intro: 'Buy Deliplus hair care online in the UK: shampoos, conditioners, hair masks, leave-in masks, serums and treatments for dry, damaged, curly, coloured and sensitive-scalp hair types. Authentic Deliplus products from Spain.' }
   };
 
+  /* Merchant listing structured data — values mirror the live Shipping & Returns pages
+     (UK £3.95 2–4bd, Europe £6.95 5–8bd, Worldwide £12.95 8–15bd; 14-day return window;
+     change-of-mind return postage paid by the customer). Handling time 0–1 business day
+     is a dispatch assumption the owner should confirm. */
+  const RETURN_POLICY = { '@type': 'MerchantReturnPolicy', applicableCountry: 'GB', returnPolicyCategory: 'https://schema.org/MerchantReturnFiniteReturnWindow', merchantReturnDays: 14, returnMethod: 'https://schema.org/ReturnByMail', returnFees: 'https://schema.org/ReturnFeesCustomerResponsibility' };
+  const shipZone = (cc, rate, tmin, tmax) => ({ '@type': 'OfferShippingDetails', shippingRate: { '@type': 'MonetaryAmount', value: rate, currency: 'GBP' }, shippingDestination: { '@type': 'DefinedRegion', addressCountry: cc }, deliveryTime: { '@type': 'DeliveryTimeSpecification', handlingTime: { '@type': 'QuantitativeValue', minValue: 0, maxValue: 1, unitCode: 'DAY' }, transitTime: { '@type': 'QuantitativeValue', minValue: tmin, maxValue: tmax, unitCode: 'DAY' } } });
+  const SHIPPING_DETAILS = [shipZone('GB', 3.95, 2, 4), shipZone('GB', 6.95, 5, 8), shipZone('GB', 12.95, 8, 15)];
   const byCat = cat => products.filter(p => p.category === cat && p.inStock);
   const featured = products.filter(p => p.inStock).slice(0, 8);
 
@@ -251,7 +258,7 @@ ${related.length ? `<h2>Related products</h2><div class="grid">${related.map(pro
       title: `${p.name} | Buy Deliplus UK — ${gbp(p.retailPrice)}`,
       desc, canonical: url, body,
       jsonLd: [
-        { '@context': 'https://schema.org', '@type': 'Product', name: p.name, image: [p.image], description: desc, sku: p.sku, brand: { '@type': 'Brand', name: 'Deliplus' }, /* no GTIN/MPN: not verified — omitted rather than fabricated */ offers: { '@type': 'Offer', url, priceCurrency: 'GBP', price: p.retailPrice.toFixed(2), availability: p.inStock ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock', itemCondition: 'https://schema.org/NewCondition', seller: { '@type': 'Organization', name: 'SLU Deliplus UK (independent retailer)' } } },
+        { '@context': 'https://schema.org', '@type': 'Product', name: p.name, image: [p.image], description: desc, sku: p.sku, brand: { '@type': 'Brand', name: 'Deliplus' }, /* no GTIN/MPN: not verified — omitted rather than fabricated */ offers: { '@type': 'Offer', url, priceCurrency: 'GBP', price: p.retailPrice.toFixed(2), availability: p.inStock ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock', itemCondition: 'https://schema.org/NewCondition', seller: { '@type': 'Organization', name: 'SLU Deliplus UK (independent retailer)' }, shippingDetails: SHIPPING_DETAILS, hasMerchantReturnPolicy: RETURN_POLICY } },
         { '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: [
           { '@type': 'ListItem', position: 1, name: 'Home', item: BASE + '/' },
           { '@type': 'ListItem', position: 2, name: cat.label, item: `${BASE}/category/${p.category}/` },
