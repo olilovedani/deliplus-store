@@ -35,10 +35,10 @@ module.exports = function seo(app, products, publicDir) {
 
   /* Merchant listing structured data — values mirror the live Shipping & Returns pages
      (UK £3.95 2–4bd, Europe £6.95 5–8bd, Worldwide £12.95 8–15bd; 14-day return window;
-     change-of-mind return postage paid by the customer). Handling time 0–1 business day
-     is a dispatch assumption the owner should confirm. */
+     change-of-mind return postage paid by the customer). Handling time 2–3 business
+     days — confirmed by the owner (dispatch from Spain). */
   const RETURN_POLICY = { '@type': 'MerchantReturnPolicy', applicableCountry: 'GB', returnPolicyCategory: 'https://schema.org/MerchantReturnFiniteReturnWindow', merchantReturnDays: 14, returnMethod: 'https://schema.org/ReturnByMail', returnFees: 'https://schema.org/ReturnFeesCustomerResponsibility' };
-  const shipZone = (cc, rate, tmin, tmax) => ({ '@type': 'OfferShippingDetails', shippingRate: { '@type': 'MonetaryAmount', value: rate, currency: 'GBP' }, shippingDestination: { '@type': 'DefinedRegion', addressCountry: cc }, deliveryTime: { '@type': 'DeliveryTimeSpecification', handlingTime: { '@type': 'QuantitativeValue', minValue: 0, maxValue: 1, unitCode: 'DAY' }, transitTime: { '@type': 'QuantitativeValue', minValue: tmin, maxValue: tmax, unitCode: 'DAY' } } });
+  const shipZone = (cc, rate, tmin, tmax) => ({ '@type': 'OfferShippingDetails', shippingRate: { '@type': 'MonetaryAmount', value: rate, currency: 'GBP' }, shippingDestination: { '@type': 'DefinedRegion', addressCountry: cc }, deliveryTime: { '@type': 'DeliveryTimeSpecification', handlingTime: { '@type': 'QuantitativeValue', minValue: 2, maxValue: 3, unitCode: 'DAY' }, transitTime: { '@type': 'QuantitativeValue', minValue: tmin, maxValue: tmax, unitCode: 'DAY' } } });
   const SHIPPING_DETAILS = [shipZone('GB', 3.95, 2, 4), shipZone('GB', 6.95, 5, 8), shipZone('GB', 12.95, 8, 15)];
   const byCat = cat => products.filter(p => p.category === cat && p.inStock);
   const featured = products.filter(p => p.inStock).slice(0, 8);
@@ -81,6 +81,11 @@ ${body}
 </div>
 <footer><strong>SLU Deliplus UK</strong> · 85 Great Portland St, Harley St, London W1W 7LT, United Kingdom · <a href="mailto:client@deliplus.uk" style="color:#a7f3d0">client@deliplus.uk</a><br>© Deliplus UK · Independent retailer of authentic Spanish cosmetics · Secure payments by Stripe<br>
 <a href="/about-deliplus/">About Deliplus</a> · <a href="/shipping-to-uk/">Shipping to the UK</a> · <a href="/returns-refunds/">Returns &amp; Refunds</a> · <a href="/contact/">Contact</a> · <a href="/faq/">FAQ</a> · <a href="/privacy-policy/">Privacy</a> · <a href="/terms/">Terms</a> · <a href="/blog/">Blog</a></footer>
+<a href="https://wa.me/34644792302?text=Hello!%20I%20have%20a%20question%20about%20Deliplus%20products." target="_blank" rel="noopener" aria-label="Chat with us on WhatsApp"
+   style="position:fixed;bottom:1.1rem;right:1.1rem;z-index:60;width:3.4rem;height:3.4rem;border-radius:9999px;background:#25D366;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 14px rgba(0,0,0,.25);text-decoration:none"
+   onmouseover="this.style.transform='scale(1.08)'" onmouseout="this.style.transform='scale(1)'">
+  <svg viewBox="0 0 32 32" width="34" height="34" aria-hidden="true"><path fill="#fff" d="M16.04 3.33c-7.03 0-12.73 5.7-12.73 12.73 0 2.24.59 4.43 1.7 6.35L3.3 28.67l6.4-1.68a12.7 12.7 0 0 0 6.34 1.7h.01c7.02 0 12.72-5.7 12.72-12.73 0-3.4-1.32-6.6-3.73-9A12.62 12.62 0 0 0 16.04 3.33Zm0 23.24h-.01a10.6 10.6 0 0 1-5.38-1.47l-.39-.23-4.03 1.06 1.08-3.93-.25-.4a10.56 10.56 0 0 1-1.62-5.63c0-5.85 4.77-10.61 10.63-10.61 2.84 0 5.5 1.1 7.5 3.11a10.55 10.55 0 0 1 3.1 7.51c0 5.86-4.77 10.62-10.63 10.62Zm5.83-7.96c-.32-.16-1.89-.93-2.18-1.04-.29-.1-.5-.16-.71.16-.21.32-.82 1.04-1 1.25-.19.21-.37.24-.69.08a8.7 8.7 0 0 1-2.56-1.58 9.66 9.66 0 0 1-1.77-2.2c-.18-.32-.02-.5.14-.66.15-.14.32-.37.48-.56.16-.19.21-.32.32-.53.1-.21.05-.4-.03-.56-.08-.16-.71-1.72-.98-2.36-.26-.61-.52-.53-.71-.54l-.6-.01c-.21 0-.56.08-.85.4-.29.32-1.11 1.09-1.11 2.65 0 1.56 1.14 3.07 1.3 3.28.16.21 2.24 3.42 5.42 4.8.76.32 1.35.52 1.81.67.76.24 1.45.2 2 .12.61-.09 1.89-.77 2.15-1.52.27-.75.27-1.39.19-1.52-.08-.13-.29-.21-.6-.37Z"/></svg>
+</a>
 <script>
 async function submitReview(ev, id) {
   ev.preventDefault();
