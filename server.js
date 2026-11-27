@@ -169,7 +169,7 @@ app.post('/create-checkout-session', async (req, res) => {
       shipping_address_collection: { allowed_countries: ALLOWED_COUNTRIES },
       phone_number_collection: { enabled: true },
       customer_email: customer.email,
-      receipt_email: customer.email,   // Stripe emails the payment receipt to the customer automatically
+      payment_intent_data: { receipt_email: customer.email },   // Stripe emails the payment receipt to the customer automatically
       success_url: `${origin}/success.html?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${origin}/?canceled=true`,
       metadata: {
